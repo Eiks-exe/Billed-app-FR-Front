@@ -8,6 +8,11 @@ import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
+jest.mock('./Logout', () => jest.fn());
+import Logout from "./Logout.js"
+import Bills from '../containers/Bills.js'
+
+
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -34,6 +39,14 @@ describe("Given I am connected as an employee", () => {
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
+    })
+  })
+})
+
+describe("Given i am connected as an employee", ()=>{
+  describe('When i am on Bills page and i click on NewBill', ()=>{
+    test(('Then, i should be sent to newBill page'), ()=>{
+      
     })
   })
 })
