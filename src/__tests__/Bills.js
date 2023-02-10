@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom"
+import {screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
@@ -44,6 +44,14 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+// describe("Given i am connected as an employee", ()=>{
+//   describe('When i am on Bills page and i click on NewBill', ()=>{
+//     test(('Then, i should be sent to newBill page'), ()=>{
+
+//     })
+//   })
+// })
 
 // describe("Given i am connected as an employee", ()=>{
 //   describe('When i am on Bills page and i click on NewBill', ()=>{
