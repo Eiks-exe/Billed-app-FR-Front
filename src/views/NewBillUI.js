@@ -10,7 +10,7 @@ export default () => {
           <div class='content-title'> Envoyer une note de frais </div>
         </div>
         <div class="form-newbill-container content-inner">
-          <form data-testid="form-new-bill">
+          <form id="form-new-bill" data-testid="form-new-bill" role="new-bill-form">
             <div class="row">
                 <div class="col-md-6">
                   <div class="col-half">
@@ -62,7 +62,7 @@ export default () => {
             <div class="row">
               <div class="col-md-6">
                 <div class="col-half">
-                  <button type="submit" id='btn-send-bill' class="btn btn-primary">Envoyer</button>
+                  <button type="submit" id='btn-send-bill' data-testid="btn-send-bill" class="btn btn-primary">Envoyer</button>
                 </div>
               </div>
             </div>

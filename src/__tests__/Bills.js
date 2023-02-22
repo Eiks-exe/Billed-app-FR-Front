@@ -32,8 +32,9 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
+      screen.debug(windowIcon)
       //to-do write expect expression
-
+      expect(windowIcon).toBe
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
@@ -97,8 +98,11 @@ describe('Given I am connected as an employee', () => {
       expect(logoutInitSpy).toHaveBeenCalled();
     });
   });
+
   describe('When I am on Bills Page and i click on NewBill', () => {
     test(('Then, I should be sent to newBill page'), () => {
+      
+      // Given 
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -110,16 +114,22 @@ describe('Given I am connected as an employee', () => {
       const store = null
       const billsObj = new Bills({ document, onNavigate, store, localStorage })
       const handleClick = jest.fn(billsObj.handleClickNewBill )
-
       const newBill = screen.getByTestId('btn-new-bill')
       newBill.addEventListener('click', handleClick)
+      
+      //When 
       userEvent.click(newBill)
+      
+      //Then
       expect(handleClick).toHaveBeenCalled()
       expect(screen.getByText('Envoyer une note de frais')).toBeTruthy()
     })
   })
+  
   describe('When I am on Bills Page', () => {
     test(('Then, I should see a list of bill'), async () => {
+      
+      // Given 
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -133,9 +143,10 @@ describe('Given I am connected as an employee', () => {
       const billsObj = new Bills({ document, onNavigate, store, localStorage })
       const handleMethod = jest.fn(billsObj.getBills)
       const result = await handleMethod()
-
       const billsTable = screen.getByTestId('tbody')
       const numberOfBill = billsTable.children.length;
+     
+      // Then
       expect(handleMethod).toHaveBeenCalled()
       expect(consoleSpy).toHaveBeenCalledWith('length', result.length);
       expect(bills.length == numberOfBill).toBeTruthy()
@@ -154,14 +165,20 @@ describe('Given I am connected as an employee', () => {
 
     describe('When I click on a eye icon', () => {
       test(('Then, I should see a modal opening'), async () => {
+        //Given
+        screen.debug()
         const onNavigate = (pathname) => {
           document.body.innerHTML = ROUTES({ pathname })
         }
+        screen.debug()
+
         Object.defineProperty(window, 'localStorage', { value: localStorageMock })
         //Object.defineProperty(window, 'modal', { value: jest.fn })
         window.localStorage.setItem('user', JSON.stringify({
           type: 'Employee'
         }))
+        screen.debug()
+
         document.body.innerHTML = BillsUI({ data: bills })
         const store = mockstore;
         const billsObj = new Bills({ document, onNavigate, store, localStorage })
@@ -170,12 +187,16 @@ describe('Given I am connected as an employee', () => {
         const iconEye = screen.queryAllByTestId('icon-eye')[0];
         //@ts-ignore
         iconEye.addEventListener('click', handleClick(iconEye));
-        
+        //When
         userEvent.click(iconEye);
         //@ts-ignore
+        //Then
         expect(handleClick).toHaveBeenCalled();
         await new Promise((r) => setTimeout(r, 1000));
         expect(screen.getByTestId('modaleFile').classList.contains('show')).toBeTruthy();
+        screen.debug(screen.queryAllByTestId('test'))
+        console.log("test")
+
       })
     })
   })
