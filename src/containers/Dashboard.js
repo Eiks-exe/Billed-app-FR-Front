@@ -72,10 +72,10 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
-    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
-    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
-    new Logout({ localStorage, onNavigate })
+    $('#arrow-icon1').on("click",(e) => this.handleShowTickets(e, bills, 1))
+    $('#arrow-icon2').on("click",(e) => this.handleShowTickets(e, bills, 2))
+    $('#arrow-icon3').on("click",(e) => this.handleShowTickets(e, bills, 3))
+    new Logout({document, onNavigate, localStorage })
   }
 
   handleClickIconEye = () => {
@@ -145,8 +145,11 @@ export default class {
       this.counter ++
     }
 
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+    
+
+    filteredBills(bills, getStatus(this.index)).forEach(bill => {
+      //$(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      $(`#open-bill${bill.id}`).on("click", (e)=> this.handleEditTicket(e, bill, bills))
     })
 
     return bills
