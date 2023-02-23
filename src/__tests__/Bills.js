@@ -34,7 +34,7 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId('icon-window')
       screen.debug(windowIcon)
       //to-do write expect expression
-      expect(windowIcon).toBe
+      expect(windowIcon).toHaveStyle('background-color: #7bb1f7')
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })

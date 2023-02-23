@@ -9,6 +9,8 @@ export default class Logout {
     this.document = document
     this.onNavigate = onNavigate
     this.localStorage = localStorage
+    const discoButton = this.document.getElementById('layout-disconnect')
+    discoButton.addEventListener('click', this.handleClick)
   }
   
   handleClick = (e) => {
