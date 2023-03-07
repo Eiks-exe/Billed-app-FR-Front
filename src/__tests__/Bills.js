@@ -20,7 +20,6 @@ import router from "../app/Router.js";
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -30,12 +29,9 @@ describe("Given I am connected as an employee", () => {
       document.body.append(root)
       router()
       window.onNavigate(ROUTES_PATH.Bills)
-      await waitFor(() => screen.getByTestId('icon-window'))
-      const windowIcon = screen.getByTestId('icon-window')
-      screen.debug(windowIcon)
-      //to-do write expect expression
-      expect(windowIcon).toBe
+      expect(screen.getByTestId('icon-window').classList.value).toEqual("active-icon")
     })
+    
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
@@ -90,7 +86,7 @@ describe('Given I am connected as an employee', () => {
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }));
-
+      // instantiation
       const logout = new Logout({ document, onNavigate, localStorage });
       const logoutInitSpy = jest.spyOn(logout, 'init');
       logout.init();
@@ -121,6 +117,7 @@ describe('Given I am connected as an employee', () => {
       userEvent.click(newBill)
       
       //Then
+      // test la presence du titre "Envoyer une note de frais"
       expect(handleClick).toHaveBeenCalled()
       expect(screen.getByText('Envoyer une note de frais')).toBeTruthy()
     })
