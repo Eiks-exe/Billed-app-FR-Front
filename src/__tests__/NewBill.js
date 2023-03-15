@@ -87,7 +87,7 @@ describe("When I am on NewBill Page Valid Data", () => {
     userEvent.click(newBill)
     expect(handleSubmit).toHaveBeenCalled()
     expect(consoleSpy).toHaveBeenCalledTimes(1);
-    expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
+    expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
   })
 })
 

@@ -2,35 +2,62 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
 
 export default class NewBill {
-  constructor({ document, onNavigate, store, localStorage }) {
-    this.document = document
-    this.onNavigate = onNavigate
-    this.store = store
-    const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
-    formNewBill.addEventListener("submit", this.handleSubmit)
-    const file = this.document.querySelector(`input[data-testid="file"]`)
-    file.addEventListener("change", this.handleChangeFile)
-    this.fileUrl = null
-    this.fileName = null
-    this.billId = null
-    new Logout({ document, localStorage, onNavigate })
+  /**
+   * NewBill constructor
+   * @param {Object} param0
+   * @param {Document} param0.document
+   * @param {navigateCallback} param0.onNavigate
+   * @param {import("../app/Store").default} param0.store
+   * @param {Storage} param0.localStorage
+   */
+  constructor({
+    document: l_document,
+    onNavigate,
+    store,
+    localStorage: l_localStorage,
+  }) {
+    this.document = l_document;
+    this.onNavigate = onNavigate;
+    this.store = store;
+    const formNewBill = this.document.querySelector(
+      `form[data-testid="form-new-bill"]`
+    );
+    formNewBill.addEventListener('submit', this.handleSubmit);
+    const file = this.document.querySelector(`input[data-testid="file"]`);
+    file.addEventListener('change', this.handleChangeFile);
+    this.fileUrl = null;
+    this.fileName = null;
+    this.billId = null;
+    new Logout({
+      document: l_document,
+      localStorage: l_localStorage,
+      onNavigate,
+    });
+    console.log(formNewBill)
   }
-  handleChangeFile = e => {
-    e.preventDefault()
-    const input = this.document.querySelector(`input[data-testid="file"]`)
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length - 1]
-    const formData = new FormData()
-    const email = JSON.parse(localStorage.getItem("user")).email
+  handleChangeFile = async (e) => {
+    try {
+      e.preventDefault();
+      /** @type {HTMLInputElement} */
+      const input = this.document.querySelector(`input[data-testid="file"]`);
+      const file = input?.files?.[0];
+      await this.handleChangeFileLogic(input, file);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  handleChangeFileLogic = async (input, logic_file) => {
+    try {
+      if (['image/png', 'image/jpeg'].includes(logic_file.type)) {
+        const filePath = input.value.split(/\\/g);
+        const fileName = filePath[filePath.length - 1];
+        const formData = new FormData();
+        const email = JSON.parse(localStorage.getItem('user')).email;
+        formData.append('file', logic_file);
+        formData.append('email', email);
 
-    if (['image/png', 'image/jpeg'].includes(file.type)) {
-
-      formData.append('file', file)
-      formData.append('email', email)
-
-      this.store
+        this.store
         .bills()
         .create({
           data: formData,
@@ -39,27 +66,33 @@ export default class NewBill {
           }
         })
         .then(({ fileUrl, key }) => {
-          console.log(fileUrl)
+          console.log(input.value, key , "test")
           this.billId = key
-          this.fileUrl = fileUrl
+          this.fileUrl = input.value
           this.fileName = fileName
         }).catch(error => console.error(error))
 
-    } else {
-      alert("pls select a correct .png, .jpeg or .jpg file")
 
-      input.value = '';
-      this.fileUrl = null;
-      this.fileName = null;
+      } else {
+        
+        input.value = '';
+        this.fileUrl = null;
+        this.fileName = null;
 
-      input.setCustomValidity('Please upload a valid image file .jpg, .jpeg or .png');
-      input.reportValidity();
-      setTimeout(() => input.setCustomValidity(''), 5100);
-      throw 'Invalid file type';
+        input.setCustomValidity('Please upload a valid image file .jpg, .jpeg or .png');
+        input.reportValidity();
+        setTimeout(() => input.setCustomValidity(''), 5100);
+        throw 'Invalid file type';
+      }
+
+    } catch (error) {
+      console.error(logic_file.type);
+      console.error(error);
     }
-
-
   }
+
+
+
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
@@ -77,8 +110,10 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
-    this.updateBill(bill)
-    this.onNavigate(ROUTES_PATH['Bills'])
+    if (bill.amount && bill.date && bill.pct) {
+      this.updateBill(bill);
+      this.onNavigate(ROUTES_PATH['Bills']);
+    }
   }
 
   // not need to cover this function by tests
