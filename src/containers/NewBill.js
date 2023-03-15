@@ -1,10 +1,5 @@
-import { ROUTES_PATH } from '../constants/routes.js';
-import Logout from './Logout.js';
-
-/**
- * @typedef {typeof ROUTES_PATH} IPath
- * @typedef {import("../app/Router.js").navigateCallback} navigateCallback
- */
+import { ROUTES_PATH } from '../constants/routes.js'
+import Logout from "./Logout.js"
 
 export default class NewBill {
   /**
@@ -38,11 +33,8 @@ export default class NewBill {
       localStorage: l_localStorage,
       onNavigate,
     });
+    console.log(formNewBill)
   }
-  /**
-   * 
-   * @param {InputEvent} e 
-   */
   handleChangeFile = async (e) => {
     try {
       e.preventDefault();
@@ -54,6 +46,7 @@ export default class NewBill {
       console.error(error);
     }
   };
+
   handleChangeFileLogic = async (input, logic_file) => {
     try {
       if (['image/png', 'image/jpeg'].includes(logic_file.type)) {
@@ -64,16 +57,20 @@ export default class NewBill {
         formData.append('file', logic_file);
         formData.append('email', email);
 
-        const { fileUrl, key } = await this.store.bills().create({
+        this.store
+        .bills()
+        .create({
           data: formData,
           headers: {
-            noContentType: true,
-          },
-        });
-
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
+            noContentType: true
+          }
+        })
+        .then(({ fileUrl, key }) => {
+          console.log(input.value, key , "test")
+          this.billId = key
+          this.fileUrl = input.value
+          this.fileName = fileName
+        }).catch(error => console.error(error))
 
 
       } else {
@@ -93,36 +90,31 @@ export default class NewBill {
       console.error(error);
     }
   }
-  handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(
-      'e.target.querySelector(`input[data-testid="datepicker"]`).value',
-      e.target.querySelector(`input[data-testid="datepicker"]`).value
-    );
-    const email = JSON.parse(localStorage.getItem('user')).email;
+
+
+
+  handleSubmit = e => {
+    e.preventDefault()
+    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
       name: e.target.querySelector(`input[data-testid="expense-name"]`).value,
-      amount: parseInt(
-        e.target.querySelector(`input[data-testid="amount"]`).value
-      ),
+      amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
       date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
       vat: e.target.querySelector(`input[data-testid="vat"]`).value,
-      pct:
-        parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) ||
-        20,
-      commentary: e.target.querySelector(`textarea[data-testid="commentary"]`)
-        .value,
+      pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
+      commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
       fileUrl: this.fileUrl,
       fileName: this.fileName,
-      status: 'pending',
-    };
-    if (bill.amount && bill.date && bill.pct && this.fileUrl) {
+      status: 'pending'
+    }
+    if (bill.amount && bill.date && bill.pct) {
       this.updateBill(bill);
       this.onNavigate(ROUTES_PATH['Bills']);
     }
-  };
+  }
 
   // not need to cover this function by tests
   updateBill = (bill) => {
@@ -131,9 +123,9 @@ export default class NewBill {
         .bills()
         .update({ data: JSON.stringify(bill), selector: this.billId })
         .then(() => {
-          this.onNavigate(ROUTES_PATH['Bills']);
+          this.onNavigate(ROUTES_PATH['Bills'])
         })
-        .catch((error) => console.error(error));
+        .catch(error => console.error(error))
     }
-  };
+  }
 }
