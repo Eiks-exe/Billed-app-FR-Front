@@ -29,13 +29,11 @@ describe("Given I am connected as an employee", () => {
       const store = null
       const billsObj = new NewBill({ document, onNavigate, store, localStorage })
       const handleSubmit = jest.fn(billsObj.handleSubmit)
-      //const form = screen.getByTestId("form-new-bill");
       const form = screen.getByRole("new-bill-form");
       form.addEventListener("submit", handleSubmit);
       const newBill = screen.getByTestId('btn-send-bill')
       userEvent.click(newBill)
       expect(handleSubmit).toHaveBeenCalled()
-      //expect(form).toBeTruthy()
     })
   })
 })
